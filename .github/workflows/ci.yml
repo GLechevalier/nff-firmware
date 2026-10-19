@@ -94,3 +94,18 @@ jobs:
       - name: nff doctor (informational)
         continue-on-error: true
         run: nff doctor
+
+  # ── Dashboard: the fleet web app (dashboard/), which Vercel deploys from main ─
+  dashboard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: dashboard/package-lock.json
+      - run: npm ci
+        working-directory: dashboard
+      - run: npx tsc -b && npx vite build
+        working-directory: dashboard

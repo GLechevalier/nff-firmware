@@ -1,0 +1,82 @@
+{
+  "framework": "vite",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "functions": {
+    "api/devices/ping.ts": {
+      "maxDuration": 15
+    },
+    "api/devices/crash.ts": {
+      "maxDuration": 15
+    },
+    "api/github.ts": {
+      "maxDuration": 20
+    },
+    "api/provision.ts": {
+      "maxDuration": 20
+    },
+    "api/compile-flash.ts": {
+      "maxDuration": 300
+    },
+    "api/demo.ts": {
+      "maxDuration": 60
+    },
+    "api/account.ts": {
+      "maxDuration": 60
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/auth/login",
+      "destination": "/api/account?action=auth-login"
+    },
+    {
+      "source": "/api/auth/refresh",
+      "destination": "/api/account?action=auth-refresh"
+    },
+    {
+      "source": "/api/auth/logout",
+      "destination": "/api/account?action=auth-logout"
+    },
+    {
+      "source": "/api/demo/:action",
+      "destination": "/api/demo?action=:action"
+    },
+    {
+      "source": "/api/github/:action",
+      "destination": "/api/github?action=:action"
+    },
+    {
+      "source": "/api/ota/:action",
+      "destination": "/api/ota?action=:action"
+    },
+    {
+      "source": "/api/account/:action",
+      "destination": "/api/account?action=:action"
+    },
+    {
+      "source": "/api/brain/ingest",
+      "destination": "/api/account?action=brain-ingest"
+    },
+    {
+      "source": "/api/brain/ping",
+      "destination": "/api/account?action=brain-ping"
+    },
+    {
+      "source": "/admin-api/:path*",
+      "destination": "https://admin.nanoforgeflow.com/:path*"
+    },
+    {
+      "source": "/demo",
+      "destination": "/demo.html"
+    },
+    {
+      "source": "/floor",
+      "destination": "/floor.html"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/"
+    }
+  ]
+}

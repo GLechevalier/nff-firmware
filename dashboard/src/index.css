@@ -1,0 +1,51 @@
+@import "tailwindcss";
+/* The add-on library lives in this repo (src/add-ons; App.tsx renders the add-on tabs
+   from it): its theme tokens/keyframes come from theme.css. Same tree, so
+   Tailwind's default source scan already covers it — no @source needed. */
+@import "./core/theme.css";
+/* The agent worker vendored under src/core/agent/service is a Node service, not UI:
+   no classes to find, and a 500 MB node_modules to avoid walking. */
+@source not "./core/agent/service";
+
+html, body, #root {
+  height: 100%;
+}
+
+/* Physical press: a CTA sinks toward its hard shadow and darkens while held.
+   Ported from the landing site so the login page matches nanoforgeflow.com. */
+.press {
+  box-shadow: 4px 4px 0 #000;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
+}
+.press:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 #000;
+  filter: brightness(0.9);
+}
+
+/* Device status dot — pulses while a device is "breaking" (amber) or actively crashing /
+   being fixed (red), so a live incident is visible at a glance. See StatusBadge. */
+@keyframes nff-dot-pulse {
+  0%, 100% { opacity: 1;   transform: scale(1); }
+  50%      { opacity: 0.4; transform: scale(0.82); }
+}
+
+/* Crash toast (top-right): slides in from off-screen so a fresh panic is noticed. See CrashToast. */
+@keyframes nff-toast-in {
+  from { opacity: 0; transform: translateX(24px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* Settings → Store: the sub-app's job sections and their rows reveal with
+   nff-node-in when expanded (SettingsTab's REVEAL). Nothing moves for a
+   visitor who asked for reduced motion — the rows just appear. */
+@media (prefers-reduced-motion: reduce) {
+  [data-store-reveal] { animation: none !important; }
+}
+
+/* Policy activation toast: each node/edge of the mini state→action chain fades in with a
+   slight rise as its reveal stage arrives. See PolicyActivityToast. */
+@keyframes nff-node-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

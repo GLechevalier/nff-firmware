@@ -1,0 +1,25 @@
+{
+  "firmwares": [
+    {
+      "id": "nff-real-wired",
+      "name": "Real nff firmware — wired over USB (recommended)",
+      "manifest": "firmware/nff-onboard-wired/manifest.json",
+      "blurb": "Zero-config: no WiFi needed. The device gets its network through the USB cable via this tab and comes online in YOUR project immediately. Add WiFi later to cut the cord.",
+      "local": false
+    },
+    {
+      "id": "nff-real",
+      "name": "Real nff firmware — via your WiFi (advanced)",
+      "manifest": "firmware/nff-onboard/manifest.json",
+      "blurb": "Prefer WiFi from the start (or no Web Serial-friendly cable)? Enter your 2.4 GHz network's credentials; the device connects directly and no cable is needed after flashing.",
+      "local": false
+    },
+    {
+      "id": "demo-blink",
+      "name": "Demo blink (no fleet)",
+      "manifest": "firmware/manifest.json",
+      "blurb": "Blinks the onboard LED + serial heartbeat. No WiFi, no certs — proof of flashing.",
+      "local": false
+    }
+  ]
+}

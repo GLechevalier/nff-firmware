@@ -1,0 +1,88 @@
+{
+  "name": "Real nff firmware — wired over USB (no WiFi needed)",
+  "description": "Full nff SDK firmware, zero-config: it gets its network through the USB cable (PPPoS terminated by this browser tab) and comes online in YOUR project immediately. Provisioned at flash time; add WiFi later with the cut-the-cord step.",
+  "chip": "esp32",
+  "flashMode": "keep",
+  "flashFreq": "keep",
+  "flashSize": "keep",
+  "monitorBaud": 460800,
+  "inputs": [],
+  "link": {
+    "kind": "pppos",
+    "baud": 460800,
+    "hostIp": "10.0.0.1",
+    "deviceIp": "10.0.0.2",
+    "brokerIp": "10.0.0.3",
+    "brokerPort": 8883
+  },
+  "provision": {
+    "url": "/api/provision",
+    "requiresAuth": true,
+    "map": [
+      {
+        "kind": "str",
+        "source": "NFF_PROJECT_ID",
+        "token": "NFFxPROJ",
+        "maxLen": 36
+      },
+      {
+        "kind": "str",
+        "source": "NFF_BATCH_ID",
+        "token": "NFFxBTCH",
+        "maxLen": 36
+      },
+      {
+        "kind": "der",
+        "source": "NFF_CLIENT_CERT_DER",
+        "token": "NFFxCERT",
+        "maxLen": 640
+      },
+      {
+        "kind": "der",
+        "source": "NFF_INTERMEDIATE_CERT_DER",
+        "token": "NFFxICRT",
+        "maxLen": 640
+      },
+      {
+        "kind": "der",
+        "source": "NFF_CLIENT_KEY_DER",
+        "token": "NFFxCKEY",
+        "maxLen": 160
+      },
+      {
+        "kind": "der",
+        "source": "NFF_CA_CERT_DER",
+        "token": "NFFxCACT",
+        "maxLen": 640
+      },
+      {
+        "kind": "der",
+        "source": "NFF_ROLLOVER_VERIFY_KEY_DER",
+        "token": "NFFxVKEY",
+        "maxLen": 80
+      }
+    ]
+  },
+  "parts": [
+    {
+      "path": "firmware/nff-onboard-wired/bootloader.bin",
+      "offset": "0x1000",
+      "size": 25024
+    },
+    {
+      "path": "firmware/nff-onboard-wired/partitions.bin",
+      "offset": "0x8000",
+      "size": 3072
+    },
+    {
+      "path": "firmware/nff-onboard/boot_app0.bin",
+      "offset": "0xe000",
+      "size": 8192
+    },
+    {
+      "path": "firmware/nff-onboard-wired/app.bin",
+      "offset": "0x10000",
+      "size": 1087696
+    }
+  ]
+}

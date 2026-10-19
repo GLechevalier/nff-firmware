@@ -1,0 +1,106 @@
+/* opencode design tokens — vendored from sst/opencode (MIT).
+ *
+ * Source: packages/ui/src/v2/styles/colors.css (primitives)
+ *       + packages/ui/src/v2/styles/theme.css  (semantic layer, [data-color-scheme="dark"])
+ *
+ * Two deliberate departures from upstream:
+ *  1. Everything is scoped to `.oc-console` instead of `:root`. nff-app is a white
+ *     paper / black ink app; this dark island must not leak one variable into it.
+ *  2. Only the dark branch is vendored — the console commits to opencode's dark
+ *     terminal look, so the light branch would be dead weight.
+ *
+ * Primitives kept at their upstream names so a future re-sync is a plain diff.
+ */
+
+.oc-console {
+  color-scheme: dark;
+
+  /* ── Grey ── */
+  --v2-grey-50: #ffffffff;
+  --v2-grey-100: #fafafaff;
+  --v2-grey-200: #f2f2f2ff;
+  --v2-grey-300: #eeeeeeff;
+  --v2-grey-400: #dbdbdbff;
+  --v2-grey-500: #aeaeaeff;
+  --v2-grey-600: #808080ff;
+  --v2-grey-700: #5c5c5cff;
+  --v2-grey-800: #3a3a3aff;
+  --v2-grey-900: #2e2e2eff;
+  --v2-grey-1000: #242424ff;
+  --v2-grey-1100: #161616ff;
+  --v2-grey-1200: #080808ff;
+
+  /* ── Alpha ── */
+  --v2-alpha-dark-40: #00000066;
+  --v2-alpha-dark-30: #0000004d;
+  --v2-alpha-light-20: #ffffff33;
+  --v2-alpha-light-16: #ffffff29;
+  --v2-alpha-light-10: #ffffff1a;
+  --v2-alpha-light-8: #ffffff14;
+  --v2-alpha-light-6: #ffffff0f;
+  --v2-alpha-light-4: #ffffff0a;
+  --v2-alpha-light-0: #ffffff00;
+
+  /* ── Red / Green / Blue / Yellow (the tiers the console actually paints) ── */
+  --v2-red-500: #f17471ff;
+  --v2-red-900: #97252bff;
+  --v2-red-1200: #461516ff;
+  --v2-green-300: #b8e9c1ff;
+  --v2-green-500: #6bd586ff;
+  --v2-green-900: #1d783cff;
+  --v2-green-1200: #14361dff;
+  --v2-blue-300: #c3d4fdff;
+  --v2-blue-400: #a2bcffff;
+  --v2-blue-500: #7698fdff;
+  --v2-yellow-500: #f2cf76ff;
+
+  /* ── Semantic: theme.css [data-color-scheme="dark"] ── */
+  --v2-background-bg-base: var(--v2-grey-1100);
+  --v2-background-bg-deep: var(--v2-grey-1200);
+  --v2-background-bg-layer-01: var(--v2-grey-1000);
+  --v2-background-bg-layer-02: var(--v2-grey-900);
+  --v2-background-bg-layer-03: var(--v2-grey-800);
+  --v2-background-bg-inverse: var(--v2-grey-50);
+
+  --v2-text-text-base: var(--v2-grey-100);
+  --v2-text-text-muted: var(--v2-grey-500);
+  --v2-text-text-faint: var(--v2-grey-600);
+  --v2-text-text-inverse: var(--v2-grey-1100);
+  --v2-text-text-accent: var(--v2-blue-400);
+  --v2-text-text-code-accent: var(--v2-blue-400);
+
+  --v2-icon-icon-base: var(--v2-grey-400);
+  --v2-icon-icon-muted: var(--v2-grey-600);
+
+  --v2-border-border-muted: var(--v2-alpha-light-8);
+  --v2-border-border-base: var(--v2-alpha-light-10);
+  --v2-border-border-strong: var(--v2-alpha-light-20);
+  --v2-border-border-focus: var(--v2-blue-500);
+
+  --v2-overlay-simple-overlay-hover: var(--v2-alpha-light-6);
+  --v2-overlay-simple-overlay-pressed: var(--v2-alpha-light-10);
+
+  --v2-state-bg-success: var(--v2-green-1200);
+  --v2-state-fg-success: var(--v2-green-500);
+  --v2-state-border-success: var(--v2-green-900);
+  --v2-state-bg-danger: var(--v2-red-1200);
+  --v2-state-fg-danger: var(--v2-red-500);
+  --v2-state-border-danger: var(--v2-red-900);
+
+  --v2-elevation-raised:
+    0px 2px 4px 0px var(--v2-alpha-dark-30), 0px 1px 2px 0px var(--v2-alpha-dark-30),
+    0px 0px 0px 0.5px var(--v2-alpha-light-16), 0px -0.5px 0px 0px var(--v2-alpha-light-6);
+
+  /* ── Type ──
+   * Upstream loads Inter. We do not add a webfont for one tab: Inter is used if
+   * the OS has it, otherwise the platform UI sans — same metrics family, no
+   * network request, no layout shift. Code keeps nff's own mono stack. */
+  --v2-font-family-sans: Arial, Helvetica, sans-serif;
+  --font-family-sans: var(--v2-font-family-sans);
+  --font-family-mono: var(--font-mono);
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 530;
+  --line-height-large: 20px;
+  --letter-spacing-normal: -0.04px;
+}

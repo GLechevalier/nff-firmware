@@ -1,0 +1,14 @@
+{
+  "name": "nff blink demo",
+  "description": "Blinks the onboard LED (sweeps all common ESP32 LED pins, so an LED lights on almost any board) and prints a serial heartbeat — proof your ESP32 was flashed straight from the browser. No WiFi, no fleet, no certs.",
+  "chip": "esp32",
+  "flashMode": "keep",
+  "flashFreq": "keep",
+  "flashSize": "keep",
+  "parts": [
+    { "path": "firmware/nff-demo-blink/bootloader.bin", "offset": "0x1000", "size": 25024, "sha256": "1191eb3d913873c709c2fa100f829f4b824971000c0b8831b33f05f98be3282a" },
+    { "path": "firmware/nff-demo-blink/partitions.bin", "offset": "0x8000", "size": 3072, "sha256": "148b959cbff1c38aa8e1d5c0ba9d612c54997b945e56a63f41223eef650653a1" },
+    { "path": "firmware/nff-demo-blink/boot_app0.bin", "offset": "0xe000", "size": 8192, "sha256": "f94c5d786a7a8fab06ac5d10e33bf37711a6697636dc037559ea19cc410a17f0" },
+    { "path": "firmware/nff-demo-blink/app.bin", "offset": "0x10000", "size": 285216, "sha256": "4c0cb352bad9c196a9fc8544a9114679cd3db64e71095f356966b4a125679224" }
+  ]
+}
