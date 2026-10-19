@@ -28,7 +28,7 @@ nff is an MCP server that gives coding agents direct control over physical hardw
 
 Connect your board over USB and Claude writes, compiles, flashes, and reads serial output autonomously. Deploy devices with the `nff-sdk-c` library and Claude can reach them remotely: capture crash state, diagnose failures, and push fixes — without physical access.
 
-> **nff is the open-source bench CLI of the [nff platform](https://nanoforgeflow.com)** — an end-to-end, agent-driven system for developing, shipping, and operating ESP32-class firmware (bench → OTA → fleet diagnosis). This repo holds the bench CLI (`nff/`, `nff-rs/`), the device library (`sdk-c/`), the fleet services (`observability/`) and the fleet dashboard (`dashboard/`, deployed by Vercel as app.nanoforgeflow.com), all **MIT-licensed**.
+> **nff is the open-source bench CLI of the [nff platform](https://nanoforgeflow.com)** — an end-to-end, agent-driven system for developing, shipping, and operating ESP32-class firmware (bench → OTA → fleet diagnosis). This repo holds the bench CLI (`nff/`, `nff-rs/`), the device library (`sdk-c/`), the fleet services (`observability/`) and the fleet dashboard (`dashboard/`, source only, not deployed), all **MIT-licensed**. The hosted fleet backend (app.nanoforgeflow.com) is offline, so `nff auth`, `nff ota`, `nff fleet` and `nff provision` have no server to talk to; the local bench commands are unaffected.
 
 <p align="center">
   <img src="public/images/PlatformScreen.jpg" alt="nff platform" width="800">
