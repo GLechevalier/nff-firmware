@@ -1,6 +1,6 @@
 # nff dashboard
 
-The fleet dashboard, app.nanoforgeflow.com: IoT fleet monitoring and AI agent management, built with React 19, TypeScript and Vite. Vercel deploys this directory from `main` (project `nff-app`, root directory `dashboard`). It moved here from the nff-app repo in Oct 2026; the company's own admin apps live in nff-admin.
+The fleet dashboard: IoT fleet monitoring and AI agent management, built with React 19, TypeScript and Vite. It moved here from the nff-app repo in Oct 2026 as source only: it is not deployed, and app.nanoforgeflow.com, where it used to run, is offline. The `api/` functions were written for Vercel and still build. The company's own admin apps live in nff-admin.
 
 ## What it does
 
