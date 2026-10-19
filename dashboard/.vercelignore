@@ -1,0 +1,4 @@
+# Server-side add-on services (Python, Docker) are not part of the Vercel bundle.
+# Leading slash = repo root only; unanchored "add-ons/" also nukes src/add-ons/.
+/src/add-ons/github/service/
+/src/core/agent/service/

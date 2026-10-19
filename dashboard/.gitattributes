@@ -1,0 +1,6 @@
+# The vendored nff-github service (src/add-ons/github/service) is bind-mounted into Linux containers:
+# never CRLF-convert it on checkout or its .sh/.py die on a CRLF shebang.
+src/add-ons/github/service/** -text
+# Same for the vendored agent worker (src/core/agent/service): its docker-entrypoint.sh
+# runs as the container ENTRYPOINT -- CRLF there is a broken shebang.
+src/core/agent/service/** -text

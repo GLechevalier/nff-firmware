@@ -1,0 +1,196 @@
+
+/* ── Art direction ─────────────────────────────────────────────────────────
+   White is the paper, near-black is the ink. Same hierarchy mechanics as
+   before — borders, hard un-blurred shadows, hairline seams — just inverted.
+   Arial is the ONLY type — code, data, buttons, modals, everything. --font-mono
+   is kept as a token so `font-mono` classNames still compile, but it IS Arial;
+   the `*` reset below beats third-party CSS, UA <pre>/<code> defaults and
+   any inline fontFamily that sneaks back in. */
+
+* { font-family: var(--font-sans) !important; }
+
+@theme {
+  --font-sans: Arial, Helvetica, sans-serif;
+  --font-mono: Arial, Helvetica, sans-serif;
+  --default-font-family: var(--font-sans);
+  --tracking-label: 0.3px;
+
+  /* Square corners. Zeroing the named tokens collapses existing rounded-lg /
+     rounded without touching those classNames. rounded-full is not token-driven
+     (calc(infinity*1px)), so status dots keep their circle. */
+  --radius-xs: 0; --radius-sm: 0; --radius-md: 0; --radius-lg: 0;
+  --radius-xl: 0; --radius-2xl: 0; --radius-3xl: 0; --radius-4xl: 0;
+
+  /* Ink / paper */
+  --color-paper:    #fff;
+  --color-ink:      #000;
+  --color-muted:    #555;
+  --color-faint:    #999;
+  --color-hairline: #ccc;
+  --color-elevated: #f5f5f5;  /* passive row hover — the one non-pure-white fill */
+  --color-track:    #e5e5e5;  /* meter rails */
+
+  /* Hard shadows: offset, never blurred. */
+  --shadow-card: 2px 2px 0 #ddd;
+  --shadow-hard: 4px 4px 0 #000;
+
+  /* Status — these paint graphic marks (dots, bars, chip borders). Small text
+     uses Tailwind's -400 tier instead; #ef4444 is only ~4.3:1 on black. */
+  --color-online:   #22c55e;
+  --color-offline:  #6b7280;
+  --color-warning:  #eab308;
+  --color-error:    #ef4444;
+  --color-breaking: #f59e0b;
+
+  /* Activity types + chart series */
+  --color-accent-blue:   #60a5fa;
+  --color-accent-violet: #a78bfa;
+  --color-accent-green:  #34d399;
+  --color-accent-orange: #f59e0b;
+  --color-accent-pink:   #f472b6;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  @apply bg-paper text-ink antialiased;
+}
+
+/* Physical press: a CTA sinks toward its hard shadow and darkens while held. */
+.press {
+  box-shadow: 4px 4px 0 #000;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
+}
+.press:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 #000;
+  filter: brightness(0.9);
+}
+
+/* Status dot pulse (offline / error). */
+@keyframes nff-dot-pulse {
+  0%, 100% { opacity: 1;   transform: scale(1); }
+  50%      { opacity: 0.4; transform: scale(0.82); }
+}
+
+/* Brain graph activity halo (see BrainGraph.tsx / useBrainGlow.ts). Opacity
+   and animation-duration are set inline per node from its GlowInfo. */
+@keyframes nb-glow-breathe {
+  0%, 100% { opacity: calc(var(--nb-glow-i, 1) * 0.35); }
+  50%      { opacity: calc(var(--nb-glow-i, 1) * 0.85); }
+}
+@keyframes nb-glow-arrive {
+  0%   { transform: scale(1.6); }
+  100% { transform: scale(1); }
+}
+.nb-glow {
+  animation: nb-glow-breathe var(--nb-glow-period, 4000ms) ease-in-out infinite;
+  animation-delay: var(--nb-glow-delay, 0ms);
+  transform-origin: center;
+  transform-box: fill-box;
+}
+.nb-glow--fresh {
+  animation: nb-glow-arrive 900ms ease-out var(--nb-glow-delay, 0ms) 1, nb-glow-breathe var(--nb-glow-period, 4000ms) ease-in-out infinite;
+}
+/* "An agent is pulling me right now": the node square pulses ink/paper for
+   ~20s after the touch (GlowInfo.active, useBrainGlow.ts). A smooth continuous
+   fade, not a hard toggle; the glyph fades inversely so it stays readable. */
+.nb-blink      { animation: nb-blink 1400ms ease-in-out infinite; }
+.nb-blink-text { animation: nb-blink-text 1400ms ease-in-out infinite; }
+@keyframes nb-blink      { 0%, 100% { fill: var(--color-ink); }   50% { fill: var(--color-paper); } }
+@keyframes nb-blink-text { 0%, 100% { fill: var(--color-paper); } 50% { fill: var(--color-ink); } }
+/* "The agent is calling a tool right now": the Console pull-tab (App.tsx) blinks
+   ink/paper. nb-blink animates SVG `fill`; this is its HTML background/color twin. */
+.nff-blink-bw { animation: nff-blink-bw 1400ms ease-in-out infinite; }
+@keyframes nff-blink-bw {
+  0%, 100% { background: var(--color-ink);   color: var(--color-paper); }
+  50%      { background: var(--color-paper); color: var(--color-ink); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nb-blink, .nb-blink-text, .nff-blink-bw { animation: none; }
+}
+
+/* Undo toast countdown bar. */
+@keyframes shrink {
+  from { width: 100%; }
+  to   { width: 0%; }
+}
+
+.undo-bar {
+  animation: shrink var(--delay, 4000ms) linear forwards;
+}
+
+/* Tiptap note editor content. */
+.tiptap p      { margin-bottom: 0.5rem; }
+.tiptap strong { font-weight: 600; }
+.tiptap u      { text-decoration: underline; }
+.tiptap mark   { background-color: #fef08a; padding: 0 2px; }
+.tiptap h1     { font-size: 1.5rem; font-weight: 700; margin: 0.75rem 0 0.5rem; }
+.tiptap h2     { font-size: 1.25rem; font-weight: 700; margin: 0.75rem 0 0.5rem; }
+.tiptap ul     { list-style: disc;    padding-left: 1.25rem; margin-bottom: 0.5rem; }
+.tiptap ol     { list-style: decimal; padding-left: 1.25rem; margin-bottom: 0.5rem; }
+.tiptap code   { background-color: #f0f0f0; border: 1px solid #ccc; padding: 0 0.25rem; font-size: 0.875em; font-family: var(--font-mono); }
+.tiptap blockquote { border-left: 2px solid #ccc; padding-left: 0.75rem; color: #666; }
+
+/* ── React Flow (workflow canvas) ─────────────────────────────────────────
+   Retint @xyflow/react to ink/paper + square corners. Everything is scoped
+   under .react-flow (the library's own stylesheet is too), so nothing here
+   can leak into the rest of the app. Custom nodes carry their own Tailwind
+   classes — no --xy-node-* vars needed. */
+.react-flow {
+  --xy-background-color: var(--color-paper);
+  --xy-background-pattern-dots-color: var(--color-hairline);
+  --xy-edge-stroke: var(--color-faint);
+  --xy-edge-stroke-selected: var(--color-ink);
+  --xy-edge-stroke-width: 1.5;
+  --xy-handle-background-color: var(--color-ink);
+  --xy-handle-border-color: var(--color-paper);
+  --xy-selection-background-color: rgb(0 0 0 / 0.06);
+  --xy-selection-border: 1px dashed var(--color-faint);
+  --xy-controls-button-background-color: var(--color-paper);
+  --xy-controls-button-background-color-hover: var(--color-elevated);
+  --xy-controls-button-color: var(--color-ink);
+  --xy-controls-button-border-color: var(--color-hairline);
+  --xy-attribution-background-color: transparent;
+}
+.react-flow__controls { border-radius: 0; box-shadow: var(--shadow-card); }
+.react-flow__handle   { width: 12px; height: 12px; border-radius: 0; }
+
+/* ── View transitions ──────────────────────────────────────────────────────
+   The Overview brain card morphs into the Chat tab's right-hand pane on a
+   handoff (core/lib/viewTransition.ts). Named group = the moving box; root =
+   the cross-fade of everything else. */
+::view-transition-group(brain-graph) {
+  animation-duration: 480ms;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 320ms;
+}
+/* The brain's tab panel (BrainCard hostBody) growing into the full tab on ⤢
+   (App.openTabFullScreen): the destination tab wrapper carries the same name. */
+::view-transition-group(tab-panel) {
+  animation-duration: 480ms;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+/* The sub-tab column entering during that zoom (SubTabBar): slides in from behind
+   the icon rail instead of popping. :only-child = entry only (no old image) — a
+   rail-to-rail switch that already has a column keeps the plain morph. The rail
+   (Sidebar) is its own group, stacked above, so the column emerges from under it. */
+@keyframes nff-slide-in-left {
+  from { transform: translateX(-100%); }
+  to   { transform: none; }
+}
+::view-transition-group(sub-tabs) {
+  animation-duration: 480ms;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+::view-transition-new(sub-tabs):only-child {
+  animation: 480ms cubic-bezier(0.4, 0, 0.2, 1) both nff-slide-in-left;
+}
+::view-transition-group(side-rail) {
+  z-index: 1;
+}

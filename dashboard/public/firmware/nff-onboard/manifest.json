@@ -1,0 +1,99 @@
+{
+  "name": "Real nff firmware (your project)",
+  "description": "Full nff SDK firmware. Enter your WiFi and flash — it's provisioned to YOUR project at flash time, connects to the fleet over mTLS, and appears online. One golden image, no baked secrets.",
+  "chip": "esp32",
+  "flashMode": "keep",
+  "flashFreq": "keep",
+  "flashSize": "keep",
+  "monitorBaud": 115200,
+  "inputs": [
+    {
+      "key": "ssid",
+      "label": "WiFi network (SSID)",
+      "type": "text",
+      "token": "NFFxSSID",
+      "maxLen": 32,
+      "required": true,
+      "placeholder": "your-wifi-name"
+    },
+    {
+      "key": "pass",
+      "label": "WiFi password",
+      "type": "password",
+      "token": "NFFxPASS",
+      "maxLen": 64,
+      "required": false,
+      "placeholder": "leave blank for open networks"
+    }
+  ],
+  "provision": {
+    "url": "/api/provision",
+    "requiresAuth": true,
+    "map": [
+      {
+        "kind": "str",
+        "source": "NFF_PROJECT_ID",
+        "token": "NFFxPROJ",
+        "maxLen": 36
+      },
+      {
+        "kind": "str",
+        "source": "NFF_BATCH_ID",
+        "token": "NFFxBTCH",
+        "maxLen": 36
+      },
+      {
+        "kind": "der",
+        "source": "NFF_CLIENT_CERT_DER",
+        "token": "NFFxCERT",
+        "maxLen": 640
+      },
+      {
+        "kind": "der",
+        "source": "NFF_INTERMEDIATE_CERT_DER",
+        "token": "NFFxICRT",
+        "maxLen": 640
+      },
+      {
+        "kind": "der",
+        "source": "NFF_CLIENT_KEY_DER",
+        "token": "NFFxCKEY",
+        "maxLen": 160
+      },
+      {
+        "kind": "der",
+        "source": "NFF_CA_CERT_DER",
+        "token": "NFFxCACT",
+        "maxLen": 640
+      },
+      {
+        "kind": "der",
+        "source": "NFF_ROLLOVER_VERIFY_KEY_DER",
+        "token": "NFFxVKEY",
+        "maxLen": 80
+      }
+    ]
+  },
+  "parts": [
+    {
+      "path": "firmware/nff-onboard/bootloader.bin",
+      "offset": "0x1000",
+      "size": 25024
+    },
+    {
+      "path": "firmware/nff-onboard/partitions.bin",
+      "offset": "0x8000",
+      "size": 3072
+    },
+    {
+      "path": "firmware/nff-onboard/boot_app0.bin",
+      "offset": "0xe000",
+      "size": 8192
+    },
+    {
+      "path": "firmware/nff-onboard/app.bin",
+      "offset": "0x10000",
+      "size": 1082768
+    }
+  ]
+}

@@ -1,0 +1,716 @@
+/* Console transcript styles — ported from sst/opencode (MIT).
+ *
+ * Sources, rule for rule:
+ *   packages/session-ui/src/components/session-turn.css   → [data-component="session-turn"]
+ *   packages/session-ui/src/components/message-part.css   → user-message / text-part /
+ *                                                            reasoning-part / bash-output /
+ *                                                            edit-trigger / diagnostics
+ *   packages/session-ui/src/components/basic-tool.css     → [data-component="tool-trigger"]
+ *   packages/session-ui/src/components/tool-error-card.css→ .error-card
+ *
+ * Selector names and property values are upstream's, so a re-sync stays a plain
+ * diff. What is dropped: the light branch and every `body:not([data-new-layout])`
+ * override (this console commits to dark), and the components we do not render —
+ * permission/question docks, todos, exa, apply-patch, subagent task cards,
+ * attachments. Everything is nested under `.oc-console` so none of it can reach
+ * the white app around it.
+ */
+
+.oc-console {
+  background: var(--v2-background-bg-base);
+  color: var(--v2-text-text-base);
+  font-family: var(--font-family-sans);
+  font-size: 14px;
+  line-height: var(--line-height-large);
+  letter-spacing: var(--letter-spacing-normal);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+/* ── Transcript scroller ─────────────────────────────────────────────── */
+
+.oc-console [data-slot="session-turn-content"] {
+  flex-grow: 1;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+.oc-console [data-slot="session-turn-content"]::-webkit-scrollbar {
+  display: none;
+}
+
+.oc-console [data-slot="session-turn-list"] {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  max-width: 52rem;
+  margin: 0 auto;
+  padding: 16px 16px 32px;
+  min-width: 0;
+}
+
+.oc-console [data-component="session-turn"] {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.oc-console [data-slot="session-turn-message-container"] {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  align-self: stretch;
+  min-width: 0;
+  gap: 0;
+  overflow-anchor: none;
+}
+
+.oc-console [data-slot="session-turn-assistant-content"] {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+  gap: 12px;
+}
+
+/* ── User message ────────────────────────────────────────────────────── */
+
+.oc-console [data-component="user-message"] {
+  font-weight: var(--font-weight-regular);
+  color: var(--v2-text-text-base);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  align-self: stretch;
+  width: 100%;
+  max-width: 100%;
+}
+
+.oc-console [data-slot="user-message-body"] {
+  width: fit-content;
+  max-width: min(82%, 64ch);
+  margin-inline-start: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.oc-console [data-slot="user-message-text"] {
+  display: inline-block;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow: hidden;
+  unicode-bidi: plaintext;
+  background: var(--v2-background-bg-layer-02);
+  border: none;
+  padding: 8px 12px;
+  border-radius: 10px;
+  max-width: 100%;
+  user-select: text;
+}
+
+/* ── Assistant text ──────────────────────────────────────────────────── */
+
+.oc-console [data-component="text-part"] {
+  width: 100%;
+  min-width: 0;
+  user-select: text;
+}
+
+.oc-console [data-component="text-part"][data-streaming]::after {
+  content: "";
+  display: inline-block;
+  width: 7px;
+  height: 15px;
+  margin-left: 2px;
+  vertical-align: -2px;
+  background: var(--v2-text-text-base);
+  animation: oc-caret 1s steps(1) infinite;
+}
+
+@keyframes oc-caret {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* ── Status lines (worker sentinels) ─────────────────────────────────── */
+
+.oc-console [data-component="status-part"] {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 20px;
+  color: var(--v2-text-text-muted);
+  font-size: 13px;
+  line-height: var(--line-height-large);
+}
+
+.oc-console [data-component="status-part"][data-variant="narration"] {
+  color: var(--v2-text-text-faint);
+}
+.oc-console [data-component="status-part"][data-variant="stopped"] {
+  color: var(--v2-state-fg-danger);
+}
+.oc-console [data-component="status-part"][data-variant="schedule"] {
+  color: var(--v2-yellow-500);
+}
+
+/* ── Tool row ────────────────────────────────────────────────────────── */
+
+.oc-console [data-component="tool-part-wrapper"] {
+  width: 100%;
+  min-width: 0;
+}
+
+.oc-console [data-component="tool-trigger"] {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  align-self: stretch;
+  gap: 8px;
+  justify-content: flex-start;
+  background: none;
+  border: 0;
+  padding: 0;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+}
+
+.oc-console [data-component="tool-trigger"][data-clickable="true"] {
+  cursor: pointer;
+}
+
+.oc-console [data-slot="basic-tool-tool-indicator"] {
+  width: 16px;
+  height: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--v2-icon-icon-muted);
+  transition: transform 0.15s ease;
+}
+
+.oc-console [data-component="tool-trigger"][aria-expanded="true"] [data-slot="basic-tool-tool-indicator"] {
+  transform: rotate(90deg);
+}
+
+.oc-console [data-slot="basic-tool-tool-info-main"] {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.oc-console [data-slot="basic-tool-tool-title"] {
+  flex-shrink: 0;
+  font-size: 14px;
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-large);
+  color: var(--v2-text-text-base);
+}
+
+.oc-console [data-slot="basic-tool-tool-server"] {
+  flex-shrink: 0;
+  font-size: 14px;
+  font-weight: var(--font-weight-regular);
+  color: var(--v2-text-text-accent);
+}
+
+.oc-console [data-slot="basic-tool-tool-subtitle"],
+.oc-console [data-slot="basic-tool-tool-arg"] {
+  flex-shrink: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  font-size: 14px;
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-large);
+  color: var(--v2-text-text-muted);
+}
+
+.oc-console [data-slot="basic-tool-tool-action"] {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  margin-left: auto;
+  color: var(--v2-text-text-faint);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.oc-console [data-component="tool-trigger"][data-status="error"] [data-slot="basic-tool-tool-title"] {
+  color: var(--v2-state-fg-danger);
+}
+
+.oc-console [data-component="tool-trigger"][data-edit="true"] [data-slot="basic-tool-tool-title"] {
+  color: var(--v2-blue-400);
+}
+
+/* Upstream wraps a pending title in <TextShimmer>; the same read, in CSS. */
+.oc-console [data-component="tool-trigger"][data-status="running"] [data-slot="basic-tool-tool-title"] {
+  background: linear-gradient(
+    90deg,
+    var(--v2-text-text-faint) 0%,
+    var(--v2-text-text-base) 50%,
+    var(--v2-text-text-faint) 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: oc-shimmer 1.6s linear infinite;
+}
+
+@keyframes oc-shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+/* Expanded params — upstream drops each arg to its own row. */
+.oc-console [data-slot="basic-tool-params"] {
+  display: grid;
+  grid-template-columns: minmax(0, 11ch) minmax(0, 1fr);
+  gap: 2px 12px;
+  padding: 6px 0 0 24px;
+  font-size: 13px;
+  line-height: var(--line-height-large);
+}
+
+.oc-console [data-slot="basic-tool-param-name"] {
+  color: var(--v2-text-text-faint);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.oc-console [data-slot="basic-tool-param-value"] {
+  color: var(--v2-text-text-muted);
+  font-family: var(--font-family-mono);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+
+/* ── Tool output ─────────────────────────────────────────────────────── */
+
+.oc-console [data-component="bash-output"] {
+  direction: ltr;
+  unicode-bidi: isolate;
+  /* No `width: 100%` — it is indented by the margin below, and 100% + margin
+     overflows the transcript by exactly the indent on a narrow pane. A block
+     element auto-fits the remaining width. */
+  margin-top: 8px;
+  margin-left: 24px;
+  border: 0.5px solid var(--v2-border-border-base);
+  border-radius: 6px;
+  background: transparent;
+  overflow: hidden;
+}
+
+.oc-console [data-slot="bash-scroll"] {
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: 240px;
+  scrollbar-width: none;
+}
+.oc-console [data-slot="bash-scroll"]::-webkit-scrollbar {
+  display: none;
+}
+
+.oc-console [data-slot="bash-pre"] {
+  margin: 0;
+  padding: 12px;
+}
+
+.oc-console [data-slot="bash-pre"] code {
+  font-family: var(--font-family-mono);
+  font-size: 13px;
+  line-height: var(--line-height-large);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  color: var(--v2-text-text-muted);
+  user-select: text;
+}
+
+/* ── Errors ──────────────────────────────────────────────────────────── */
+
+.oc-console .error-card {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background-color: var(--v2-state-bg-danger);
+  border: 0.5px solid var(--v2-state-border-danger);
+  color: var(--v2-state-fg-danger);
+  font-family: var(--font-family-mono);
+  font-size: 13px;
+  line-height: var(--line-height-large);
+  max-height: 240px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  overflow-y: auto;
+  user-select: text;
+}
+
+/* ── File diff ───────────────────────────────────────────────────────── */
+
+.oc-console [data-component="file-part"] {
+  width: 100%;
+  min-width: 0;
+  border: 0.5px solid var(--v2-border-border-base);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.oc-console [data-slot="session-turn-diff-trigger"] {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+  padding: 8px 12px;
+  background: none;
+  border: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+
+.oc-console [data-slot="session-turn-diff-path"] {
+  display: flex;
+  flex-grow: 1;
+  min-width: 0;
+  direction: ltr;
+  unicode-bidi: isolate;
+  font-size: 13px;
+  line-height: var(--line-height-large);
+}
+
+.oc-console [data-slot="session-turn-diff-directory"] {
+  color: var(--v2-text-text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  direction: rtl;
+  text-align: left;
+}
+
+.oc-console [data-slot="session-turn-diff-filename"] {
+  min-width: 0;
+  color: var(--v2-text-text-base);
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.oc-console [data-slot="session-turn-diff-meta"] {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.oc-console [data-slot="diff-added"] {
+  color: var(--v2-green-500);
+}
+.oc-console [data-slot="diff-removed"] {
+  color: var(--v2-red-500);
+}
+
+.oc-console [data-slot="session-turn-diff-view"] {
+  width: 100%;
+  min-width: 0;
+  max-height: 360px;
+  overflow: auto;
+  border-top: 0.5px solid var(--v2-border-border-muted);
+  scrollbar-width: none;
+}
+.oc-console [data-slot="session-turn-diff-view"]::-webkit-scrollbar {
+  display: none;
+}
+
+.oc-console [data-slot="diff-line"] {
+  display: grid;
+  grid-template-columns: 4ch 1fr;
+  font-family: var(--font-family-mono);
+  font-size: 12px;
+  line-height: 18px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.oc-console [data-slot="diff-line"] > span:first-child {
+  color: var(--v2-text-text-faint);
+  text-align: right;
+  padding-right: 8px;
+  user-select: none;
+}
+
+.oc-console [data-slot="diff-line"][data-kind="add"] {
+  background: var(--v2-state-bg-success);
+  color: var(--v2-green-300);
+}
+.oc-console [data-slot="diff-line"][data-kind="del"] {
+  background: var(--v2-state-bg-danger);
+  color: var(--v2-red-500);
+}
+.oc-console [data-slot="diff-line"][data-kind="ctx"] {
+  color: var(--v2-text-text-muted);
+}
+/* lineDiff.ts folds long unchanged stretches into a `@@` marker. */
+.oc-console [data-slot="diff-line"][data-kind="hunk"] {
+  color: var(--v2-text-text-faint);
+  background: var(--v2-background-bg-layer-01);
+}
+
+/* ── Choices ─────────────────────────────────────────────────────────── */
+
+.oc-console [data-slot="question-options"] {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+
+.oc-console [data-slot="question-option"] {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 8px 8px 10px;
+  background-color: var(--v2-background-bg-layer-01);
+  border: 0.5px solid var(--v2-border-border-base);
+  border-radius: 6px;
+  text-align: left;
+  width: 100%;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.oc-console [data-slot="question-option"]:hover {
+  background-color: var(--v2-background-bg-base);
+  border-color: var(--v2-border-border-strong);
+}
+
+.oc-console [data-slot="question-option"]:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.oc-console [data-slot="option-label"] {
+  font-weight: var(--font-weight-medium);
+  color: var(--v2-text-text-base);
+}
+
+.oc-console [data-slot="option-description"] {
+  font-weight: var(--font-weight-regular);
+  color: var(--v2-text-text-muted);
+  overflow-wrap: anywhere;
+}
+
+/* ── Progress indicator ──────────────────────────────────────────────── */
+
+.oc-console [data-slot="session-turn-thinking"] {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+  min-height: 20px;
+  color: var(--v2-text-text-muted);
+  font-weight: var(--font-weight-medium);
+  line-height: 20px;
+}
+
+.oc-console [data-component="spinner"] {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  border: 1.5px solid var(--v2-border-border-strong);
+  border-top-color: var(--v2-text-text-muted);
+  border-radius: 999px;
+  animation: oc-spin 0.7s linear infinite;
+}
+
+@keyframes oc-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.oc-console [data-slot="session-turn-thinking-elapsed"] {
+  color: var(--v2-text-text-faint);
+  font-weight: var(--font-weight-regular);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Composer (dock-prompt) ──────────────────────────────────────────── */
+
+.oc-console [data-component="dock-prompt"] {
+  flex-shrink: 0;
+  border-top: 0.5px solid var(--v2-border-border-base);
+  background: var(--v2-background-bg-base);
+  padding: 8px 10px 10px;
+}
+
+.oc-console [data-slot="dock-prompt-inner"] {
+  width: 100%;
+  max-width: 52rem;
+  margin: 0 auto;
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  padding: 4px 8px;
+  border: 0.5px solid var(--v2-border-border-base);
+  border-radius: 8px;
+  background: var(--v2-background-bg-layer-01);
+  box-shadow: var(--v2-elevation-raised);
+  transition: border-color 0.15s ease;
+}
+
+.oc-console [data-slot="dock-prompt-inner"]:focus-within {
+  border-color: var(--v2-border-border-focus);
+}
+
+.oc-console [data-slot="dock-prompt-textarea"] {
+  flex: 1 1 auto;
+  min-width: 0;
+  resize: none;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--v2-text-text-base);
+  font: inherit;
+  line-height: var(--line-height-large);
+  max-height: 40vh;
+}
+
+.oc-console [data-slot="dock-prompt-textarea"]::placeholder {
+  color: var(--v2-text-text-faint);
+}
+
+.oc-console [data-slot="dock-prompt-send"] {
+  flex-shrink: 0;
+  height: 24px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--v2-background-bg-inverse);
+  color: var(--v2-text-text-inverse);
+  font: inherit;
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+}
+
+.oc-console [data-slot="dock-prompt-send"]:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.oc-console [data-slot="dock-prompt-send"][data-variant="stop"] {
+  background: var(--v2-state-bg-danger);
+  color: var(--v2-state-fg-danger);
+  box-shadow: inset 0 0 0 0.5px var(--v2-state-border-danger);
+}
+
+.oc-console [data-slot="dock-prompt-hint"] {
+  width: 100%;
+  max-width: 52rem;
+  margin: 6px auto 0;
+  color: var(--v2-text-text-faint);
+  font-size: 12px;
+}
+
+/* ── Header ──────────────────────────────────────────────────────────── */
+
+.oc-console [data-slot="console-header"] {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 12px;
+  border-bottom: 0.5px solid var(--v2-border-border-base);
+  color: var(--v2-text-text-muted);
+  font-size: 13px;
+}
+
+.oc-console [data-slot="console-header"] button {
+  background: none;
+  border: 0;
+  font: inherit;
+  color: var(--v2-text-text-muted);
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.oc-console [data-slot="console-header"] button:hover {
+  background: var(--v2-overlay-simple-overlay-hover);
+  color: var(--v2-text-text-base);
+}
+
+/* ── Markdown inside the transcript ──────────────────────────────────── */
+
+/* core/components/Markdown.tsx hardcodes `text-ink` (#000) on its own wrapper —
+ * invisible on this background. That class sits on the CHILD of the element we
+ * scope, so the cascade never reaches it; repaint the wrapper itself. */
+.oc-console [data-component="markdown"],
+.oc-console [data-component="markdown"] > div {
+  color: var(--v2-text-text-base);
+}
+.oc-console [data-component="markdown"] :not(pre) > code {
+  background: var(--v2-background-bg-layer-02);
+  border-radius: 4px;
+  padding: 1px 4px;
+  font-family: var(--font-family-mono);
+  font-size: 0.85em;
+  color: var(--v2-text-text-code-accent);
+}
+.oc-console [data-component="markdown"] pre {
+  background: var(--v2-background-bg-layer-01);
+  border: 0.5px solid var(--v2-border-border-base);
+  border-radius: 6px;
+  padding: 12px;
+  overflow-x: auto;
+}
+.oc-console [data-component="markdown"] pre code {
+  font-family: var(--font-family-mono);
+  font-size: 13px;
+  color: var(--v2-text-text-muted);
+}
+.oc-console [data-component="markdown"] a {
+  color: var(--v2-text-text-accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.oc-console [data-component="markdown"] :is(th, td) {
+  border-color: var(--v2-border-border-base);
+}
+.oc-console [data-component="markdown"] blockquote {
+  border-color: var(--v2-border-border-strong);
+  color: var(--v2-text-text-muted);
+}
+.oc-console [data-component="markdown"] hr {
+  border-color: var(--v2-border-border-base);
+}
